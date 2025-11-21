@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title%}
+All courses
+{% endblock %}
+
+{% block content %}
+<table class ='table mt-5 table-bordered table-hover table-striped'>
+    <thead class="table-dark">
+        <tr>
+            <th><h2>Title</h2></th> 
+            <th><h2>Price</h2></th>
+            <th><h2>Students Qty</h2></th>
+            <th><h2>ReviewsQty</h2></th>
+            <th><h2>Category</h2></th>
+            <th><h2>Remove</h2></th>
+        </tr>
+    </thead>
+    
+    <tbody> 
+    {% for cate in courses %} 
+    <tr>
+            
+        <td> <a href='{% url "single_course" cate.id %}'>{{ cate.title }}</a></td>
+        <td>{{ cate.price}}</td>
+        <td>{{ cate.student_qty}}</td>
+        <td>{{ cate.reviews_qty}}</td>
+        <td>{{ cate.category}}</td>
+        <td><a href="{% url 'delete_course' cate.id %}" class="btn btn-danger">Delete</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
