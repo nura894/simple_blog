@@ -57,6 +57,7 @@ def update_course(request, id):
     return render(request, 'update.html', context)
 
 def add_category(request):
+    category= Category.objects.all()
     if request.method=='POST':
         Category.objects.create(
             title=request.POST['title']
@@ -68,5 +69,13 @@ def add_category(request):
             return redirect('add_course')
         elif next_page=='update_course' and course_id:
             return redirect('update_course',id=course_id)
+    context={
+        'category':category
+    }
+    return render(request,'add_category.html', context)
 
-    return render(request,'add_category.html')
+def delete_category(request):
+    real_id = request.POST.get("category_id")
+    cate = get_object_or_404(Category, pk=real_id)
+    cate.delete()
+    return redirect('add_category')
