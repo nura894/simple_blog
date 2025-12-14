@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Detail</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+</head>
+<body class="p-4">
+
+<h2 class="mb-4">Course Detail</h2>
+
+<div id="course-details" class="border p-4 mb-4"></div>
+
+<button id="updateBtn" class="btn btn-primary d-none">Update</button>
+<button id="deleteBtn" class="btn btn-danger d-none">Delete</button>
+
+<script>
+// ------ Get PK passed from Django ------
+const pk = "{{ pk }}";
+
+// ------ Fetch single course ------
+fetch(`/api/course/${pk}/`)
+    .then(res => {
+        if (!res.ok) {  
+            // API returned 404 or error
+            document.getElementById("course-details").innerHTML = `
+                <h3>No course found for ID ${pk}</h3>
+                <p>This course may be deleted or does not exist.</p>
+            `;
+            throw new Error("Course not found");
+        }
+        return res.json();
+    })
+    .then(course => {
+        // In case response is OK but course object missing fields
+        if (!course || !course.title) {
+            document.getElementById("course-details").innerHTML = `
+                <h3>No course found</h3>
+            `;
+            return;
+        }
+        document.getElementById("updateBtn").classList.remove("d-none");
+        document.getElementById("deleteBtn").classList.remove("d-none");
+        
+        document.getElementById("course-details").innerHTML = `
+            <h3>${course.title}</h3>
+            <p><strong>Price:</strong> ${course.price}</p>
+            <p><strong>Students:</strong> ${course.student_qty}</p>
+            <p><strong>Reviews:</strong> ${course.reviews_qty}</p>
+            <p><strong>Category:</strong> ${course.category_name}</p>
+        `;
+    })
+    .catch(err => console.error(err));
+
+
+
+// ------ CSRF Token ------
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = cookie.substring(name.length + 1);
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie("csrftoken");
+
+
+// ------ Delete Button ------
+document.getElementById("deleteBtn").addEventListener("click", () => {
+    if (!confirm("Delete this course?")) return;
+
+    fetch(`/api/course/${pk}/`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRFToken": csrftoken
+        }
+    })
+    .then(() => {
+        alert("Course deleted");
+        window.location.href = "/course/"; // Go back to list
+    });
+});
+
+
+// ------ Update Button ------
+document.getElementById("updateBtn").addEventListener("click", () => {
+    window.location.href = `/course/${pk}/update/`;
+});
+</script>
+
+</body>
+</html>

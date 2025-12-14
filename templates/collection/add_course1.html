@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="POST" class="mt-4">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+        {{ form.title.label_tag }}
+        {{ form.title }}
+        {{ form.title.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.price.label_tag }}
+        {{ form.price }}
+        {{ form.price.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.student_qty.label_tag }}
+        {{ form.student_qty }}
+        {{ form.student_qty.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.reviews_qty.label_tag }}
+        {{ form.reviews_qty }}
+        {{ form.reviews_qty.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.category.label_tag }}
+        {{ form.category }}
+        {{ form.category.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+
+{% endblock %}
